@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administration - Gestion Ménagère Mali</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div th:replace="~{layout/header :: header}"></div>
+
+    <main class="container py-4">
+      <h2 class="mb-4">
+        <i class="bi bi-shield-lock me-2"></i>Tableau de bord Administration
+      </h2>
+
+      <!-- Statistiques globales -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-subtitle mb-2">Utilisateurs</h6>
+                  <h2 class="card-title mb-0" th:text="${nombreUtilisateurs}">
+                    0
+                  </h2>
+                </div>
+                <i class="bi bi-people fs-1 opacity-50"></i>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a
+                th:href="@{/admin/utilisateurs}"
+                class="text-white text-decoration-none small"
+              >
+                Voir tout <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-success text-white h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-subtitle mb-2">Employeurs</h6>
+                  <h2 class="card-title mb-0" th:text="${nombreEmployeurs}">
+                    0
+                  </h2>
+                </div>
+                <i class="bi bi-building fs-1 opacity-50"></i>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a
+                th:href="@{/admin/employeurs}"
+                class="text-white text-decoration-none small"
+              >
+                Voir tout <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-info text-white h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-subtitle mb-2">Aides ménagères</h6>
+                  <h2 class="card-title mb-0" th:text="${nombreAides}">0</h2>
+                </div>
+                <i class="bi bi-person-badge fs-1 opacity-50"></i>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a
+                th:href="@{/admin/aides}"
+                class="text-white text-decoration-none small"
+              >
+                Voir tout <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card bg-warning text-dark h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-subtitle mb-2">Offres actives</h6>
+                  <h2 class="card-title mb-0" th:text="${nombreOffresActives}">
+                    0
+                  </h2>
+                </div>
+                <i class="bi bi-briefcase fs-1 opacity-50"></i>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+              <a
+                th:href="@{/admin/offres}"
+                class="text-dark text-decoration-none small"
+              >
+                Voir tout <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques secondaires -->
+      <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <i class="bi bi-briefcase-fill text-primary fs-1"></i>
+              <h3 class="mt-2" th:text="${nombreOffres}">0</h3>
+              <p class="text-muted mb-0">Total offres</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <i class="bi bi-send-fill text-success fs-1"></i>
+              <h3 class="mt-2" th:text="${nombreCandidatures}">0</h3>
+              <p class="text-muted mb-0">Candidatures</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <i class="bi bi-star-fill text-warning fs-1"></i>
+              <h3 class="mt-2" th:text="${nombreFeedbacks}">0</h3>
+              <p class="text-muted mb-0">Évaluations</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Derniers employeurs -->
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0">
+                <i class="bi bi-building me-2"></i>Derniers employeurs
+              </h5>
+            </div>
+            <div class="card-body">
+              <div
+                th:if="${derniersEmployeurs == null or derniersEmployeurs.empty}"
+                class="text-center text-muted"
+              >
+                Aucun employeur
+              </div>
+              <div
+                th:unless="${derniersEmployeurs == null or derniersEmployeurs.empty}"
+                class="list-group list-group-flush"
+              >
+                <div
+                  th:each="emp : ${derniersEmployeurs}"
+                  class="list-group-item d-flex justify-content-between align-items-center px-0"
+                >
+                  <div>
+                    <strong th:text="${emp.prenom + ' ' + emp.nom}">Nom</strong>
+                    <br /><small class="text-muted" th:text="${emp.email}"
+                      >Email</small
+                    >
+                  </div>
+                  <span th:if="${emp.actif}" class="badge bg-success"
+                    >Actif</span
+                  >
+                  <span th:unless="${emp.actif}" class="badge bg-secondary"
+                    >Inactif</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dernières aides ménagères -->
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0">
+                <i class="bi bi-person-badge me-2"></i>Dernières aides
+              </h5>
+            </div>
+            <div class="card-body">
+              <div
+                th:if="${dernieresAides == null or dernieresAides.empty}"
+                class="text-center text-muted"
+              >
+                Aucune aide ménagère
+              </div>
+              <div
+                th:unless="${dernieresAides == null or dernieresAides.empty}"
+                class="list-group list-group-flush"
+              >
+                <div
+                  th:each="aide : ${dernieresAides}"
+                  class="list-group-item d-flex justify-content-between align-items-center px-0"
+                >
+                  <div>
+                    <strong th:text="${aide.prenom + ' ' + aide.nom}"
+                      >Nom</strong
+                    >
+                    <br /><small class="text-muted" th:text="${aide.email}"
+                      >Email</small
+                    >
+                  </div>
+                  <span th:if="${aide.actif}" class="badge bg-success"
+                    >Actif</span
+                  >
+                  <span th:unless="${aide.actif}" class="badge bg-secondary"
+                    >Inactif</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dernières offres -->
+        <div class="col-lg-4 mb-4">
+          <div class="card h-100">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0">
+                <i class="bi bi-briefcase me-2"></i>Dernières offres
+              </h5>
+            </div>
+            <div class="card-body">
+              <div
+                th:if="${dernieresOffres == null or dernieresOffres.empty}"
+                class="text-center text-muted"
+              >
+                Aucune offre
+              </div>
+              <div
+                th:unless="${dernieresOffres == null or dernieresOffres.empty}"
+                class="list-group list-group-flush"
+              >
+                <div
+                  th:each="offre : ${dernieresOffres}"
+                  class="list-group-item d-flex justify-content-between align-items-center px-0"
+                >
+                  <div>
+                    <strong th:text="${offre.titre}">Titre</strong>
+                    <br /><small class="text-muted" th:text="${offre.lieu}"
+                      >Lieu</small
+                    >
+                  </div>
+                  <span
+                    th:if="${offre.statut.name() == 'ACTIVE'}"
+                    class="badge bg-success"
+                    >Active</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'POURVUE'}"
+                    class="badge bg-info"
+                    >Pourvue</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'EXPIREE'}"
+                    class="badge bg-secondary"
+                    >Expirée</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'ANNULEE'}"
+                    class="badge bg-danger"
+                    >Annulée</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions rapides -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="bi bi-lightning me-2"></i>Actions rapides
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 mb-2">
+              <a
+                th:href="@{/admin/utilisateurs}"
+                class="btn btn-outline-primary w-100"
+              >
+                <i class="bi bi-people me-2"></i>Utilisateurs
+              </a>
+            </div>
+            <div class="col-md-3 mb-2">
+              <a
+                th:href="@{/admin/employeurs}"
+                class="btn btn-outline-success w-100"
+              >
+                <i class="bi bi-building me-2"></i>Employeurs
+              </a>
+            </div>
+            <div class="col-md-3 mb-2">
+              <a th:href="@{/admin/aides}" class="btn btn-outline-info w-100">
+                <i class="bi bi-person-badge me-2"></i>Aides ménagères
+              </a>
+            </div>
+            <div class="col-md-3 mb-2">
+              <a
+                th:href="@{/admin/offres}"
+                class="btn btn-outline-warning w-100"
+              >
+                <i class="bi bi-briefcase me-2"></i>Offres
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="~{layout/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      th:text="${offre != null and offre.id != null ? 'Modifier offre' : 'Nouvelle offre'} + ' - Gestion Ménagère Mali'"
+    >
+      Formulaire offre
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div th:replace="~{layout/header :: header}"></div>
+
+    <main class="container py-4">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a th:href="@{/employeur/dashboard}">Tableau de bord</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a th:href="@{/employeur/offres}">Mes offres</a>
+          </li>
+          <li
+            class="breadcrumb-item active"
+            th:text="${offre != null and offre.id != null ? 'Modifier' : 'Nouvelle offre'}"
+          >
+            Formulaire
+          </li>
+        </ol>
+      </nav>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow">
+            <div class="card-header">
+              <h4 class="mb-0">
+                <i class="bi bi-briefcase me-2"></i>
+                <span
+                  th:text="${offre != null and offre.id != null ? 'Modifier cette offre' : 'Publier une nouvelle offre'}"
+                  >Formulaire</span
+                >
+              </h4>
+            </div>
+            <div class="card-body">
+              <form
+                th:action="${offre != null and offre.id != null ? '/employeur/offres/' + offre.id + '/modifier' : '/employeur/offres/creer'}"
+                method="post"
+                th:object="${offre}"
+              >
+                <div class="mb-3">
+                  <label for="titre" class="form-label"
+                    >Titre de l'offre *</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="titre"
+                    name="titre"
+                    th:value="${offre?.titre}"
+                    required
+                    placeholder="Ex: Aide ménagère à temps plein"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label"
+                    >Description *</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    rows="6"
+                    required
+                    placeholder="Décrivez le poste, les tâches, les qualifications requises..."
+                    th:text="${offre?.description}"
+                  ></textarea>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="typeContrat" class="form-label"
+                      >Type de contrat *</label
+                    >
+                    <select
+                      class="form-select"
+                      id="typeContrat"
+                      name="typeContrat"
+                      required
+                    >
+                      <option value="">Sélectionner...</option>
+                      <option
+                        value="CDI"
+                        th:selected="${offre?.typeContrat?.name() == 'CDI'}"
+                      >
+                        CDI
+                      </option>
+                      <option
+                        value="CDD"
+                        th:selected="${offre?.typeContrat?.name() == 'CDD'}"
+                      >
+                        CDD
+                      </option>
+                      <option
+                        value="TEMPS_PARTIEL"
+                        th:selected="${offre?.typeContrat?.name() == 'TEMPS_PARTIEL'}"
+                      >
+                        Temps partiel
+                      </option>
+                      <option
+                        value="PONCTUEL"
+                        th:selected="${offre?.typeContrat?.name() == 'PONCTUEL'}"
+                      >
+                        Mission ponctuelle
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="salaire" class="form-label"
+                      >Salaire (FCFA)</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="salaire"
+                      name="salaire"
+                      th:value="${offre?.salaire}"
+                      min="0"
+                      step="1000"
+                      placeholder="Ex: 50000"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="lieu" class="form-label"
+                      >Lieu de travail *</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="lieu"
+                      name="lieu"
+                      th:value="${offre?.lieu}"
+                      required
+                      placeholder="Ex: Bamako, Hamdallaye"
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="dateExpiration" class="form-label"
+                      >Date d'expiration</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="dateExpiration"
+                      name="dateExpiration"
+                      th:value="${offre?.dateExpiration}"
+                    />
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between">
+                  <a
+                    th:href="@{/employeur/offres}"
+                    class="btn btn-outline-secondary"
+                  >
+                    <i class="bi bi-arrow-left me-2"></i>Annuler
+                  </a>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <span
+                      th:text="${offre != null and offre.id != null ? 'Enregistrer les modifications' : 'Publier'}"
+                      >Enregistrer</span
+                    >
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="~{layout/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

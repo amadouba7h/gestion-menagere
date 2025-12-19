@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${offre.titre + ' - Gestion Ménagère Mali'}">
+      Détail offre
+    </title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div th:replace="~{layout/header :: header}"></div>
+
+    <main class="container py-4">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+          <li class="breadcrumb-item"><a th:href="@{/offres}">Offres</a></li>
+          <li class="breadcrumb-item active" th:text="${offre.titre}">
+            Détail
+          </li>
+        </ol>
+      </nav>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-start mb-3"
+              >
+                <h2 class="card-title" th:text="${offre.titre}">
+                  Titre de l'offre
+                </h2>
+                <span
+                  class="badge bg-primary fs-6"
+                  th:text="${offre.typeContrat.libelle}"
+                  >Type</span
+                >
+              </div>
+
+              <div class="d-flex flex-wrap gap-3 mb-4 text-muted">
+                <span
+                  ><i class="bi bi-geo-alt me-1"></i
+                  ><span th:text="${offre.lieu}">Lieu</span></span
+                >
+                <span
+                  ><i class="bi bi-calendar me-1"></i>Publié le
+                  <span
+                    th:text="${#temporals.format(offre.datePublication, 'dd/MM/yyyy')}"
+                    >Date</span
+                  ></span
+                >
+                <span th:if="${offre.dateExpiration != null}">
+                  <i class="bi bi-clock me-1"></i>Expire le
+                  <span
+                    th:text="${#temporals.format(offre.dateExpiration, 'dd/MM/yyyy')}"
+                    >Date</span
+                  >
+                </span>
+                <span th:if="${offre.salaire != null}">
+                  <i class="bi bi-cash me-1"></i
+                  ><span th:text="${offre.salaire + ' FCFA'}">Salaire</span>
+                </span>
+              </div>
+
+              <h5>Description du poste</h5>
+              <p
+                class="card-text"
+                th:text="${offre.description}"
+                style="white-space: pre-line"
+              >
+                Description détaillée de l'offre...
+              </p>
+
+              <hr />
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span
+                    th:if="${offre.statut.name() == 'ACTIVE'}"
+                    class="badge bg-success"
+                    >Offre active</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'POURVUE'}"
+                    class="badge bg-info"
+                    >Poste pourvu</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'EXPIREE'}"
+                    class="badge bg-secondary"
+                    >Offre expirée</span
+                  >
+                  <span
+                    th:if="${offre.statut.name() == 'ANNULEE'}"
+                    class="badge bg-danger"
+                    >Offre annulée</span
+                  >
+                </div>
+
+                <div sec:authorize="hasAuthority('ROLE_AIDE_MENAGERE')">
+                  <a
+                    th:if="${offre.statut.name() == 'ACTIVE' and !aDejaPostule}"
+                    th:href="@{/offres/{id}/postuler(id=${offre.id})}"
+                    class="btn btn-success btn-lg"
+                  >
+                    <i class="bi bi-send me-2"></i>Postuler à cette offre
+                  </a>
+                  <span th:if="${aDejaPostule}" class="badge bg-info fs-6">
+                    <i class="bi bi-check me-1"></i>Vous avez déjà postulé
+                  </span>
+                </div>
+
+                <div sec:authorize="!isAuthenticated()">
+                  <a th:href="@{/login}" class="btn btn-outline-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Connectez-vous
+                    pour postuler
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <!-- Informations employeur -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">
+                <i class="bi bi-building me-2"></i>À propos de l'employeur
+              </h5>
+            </div>
+            <div class="card-body">
+              <h6
+                th:text="${offre.employeur.entreprise != null ? offre.employeur.entreprise : offre.employeur.prenom + ' ' + offre.employeur.nom}"
+              >
+                Nom employeur
+              </h6>
+              <p
+                th:if="${offre.employeur.secteurActivite != null}"
+                class="text-muted small mb-2"
+              >
+                <i class="bi bi-briefcase me-1"></i>
+                <span th:text="${offre.employeur.secteurActivite}"
+                  >Secteur</span
+                >
+              </p>
+              <p
+                th:if="${offre.employeur.adresse != null}"
+                class="text-muted small mb-2"
+              >
+                <i class="bi bi-geo-alt me-1"></i>
+                <span th:text="${offre.employeur.adresse}">Adresse</span>
+              </p>
+              <p
+                th:if="${offre.employeur.description != null}"
+                class="small"
+                th:text="${#strings.abbreviate(offre.employeur.description, 200)}"
+              >
+                Description employeur
+              </p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="card">
+            <div class="card-body">
+              <a
+                th:href="@{/offres}"
+                class="btn btn-outline-secondary w-100 mb-2"
+              >
+                <i class="bi bi-arrow-left me-2"></i>Retour aux offres
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div th:replace="~{layout/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

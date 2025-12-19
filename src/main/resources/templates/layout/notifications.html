@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <!-- Fragment de notifications Bootstrap réutilisable -->
+    <div th:fragment="alerts">
+      <!-- Notification de succès -->
+      <div
+        th:if="${success}"
+        class="alert alert-success alert-dismissible fade show notification-alert"
+        role="alert"
+      >
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${success}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Notification d'erreur -->
+      <div
+        th:if="${error}"
+        class="alert alert-danger alert-dismissible fade show notification-alert"
+        role="alert"
+      >
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Notification d'information -->
+      <div
+        th:if="${info}"
+        class="alert alert-info alert-dismissible fade show notification-alert"
+        role="alert"
+      >
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <span th:text="${info}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+
+      <!-- Notification d'avertissement -->
+      <div
+        th:if="${warning}"
+        class="alert alert-warning alert-dismissible fade show notification-alert"
+        role="alert"
+      >
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
+        <span th:text="${warning}"></span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+    </div>
+  </body>
+</html>
